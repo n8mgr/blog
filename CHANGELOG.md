@@ -1,4 +1,10 @@
 # Changelog
+## 0.1.4 (2026-08-19)
+
+### Fixes
+
+- Removed google docs escaping from post.
+
 ## 0.1.3 (2026-08-19)
 
 ### Features
