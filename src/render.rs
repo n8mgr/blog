@@ -24,12 +24,14 @@ pub(crate) struct Post {
     pub(crate) slug: String,
     pub(crate) meta: PostMeta,
     pub(crate) date: DateTime<Utc>,
+    pub(crate) source: &'static str,
     pub(crate) body_html: String,
     pub(crate) date_label: String,
 }
 
 pub(crate) struct HomePage {
     pub(crate) description: String,
+    pub(crate) source: &'static str,
     pub(crate) body_html: String,
 }
 
@@ -70,6 +72,7 @@ pub struct Site {
     pub(crate) posts: Vec<Post>,
     pub(crate) search_index: String,
     pub(crate) rss_feed: String,
+    pub(crate) sitemap: String,
 }
 
 pub fn load_site() -> Result<Site, SiteError> {
@@ -78,6 +81,7 @@ pub fn load_site() -> Result<Site, SiteError> {
     let home_meta: HomeMeta = parse_frontmatter(home_frontmatter, "index.md")?;
     let home = HomePage {
         description: home_meta.description,
+        source: home_source,
         body_html: markdown_to_html(home_markdown),
     };
 
@@ -101,12 +105,14 @@ pub fn load_site() -> Result<Site, SiteError> {
     let search_index = serde_json::to_string(&search_items)
         .map_err(|error| SiteError::new(format!("could not build search index: {error}")))?;
     let rss_feed = build_rss_feed(&home, &posts);
+    let sitemap = build_sitemap(&posts);
 
     Ok(Site {
         home,
         posts,
         search_index,
         rss_feed,
+        sitemap,
     })
 }
 
@@ -165,6 +171,37 @@ fn build_rss_feed(home: &HomePage, posts: &[Post]) -> String {
     feed
 }
 
+fn build_sitemap(posts: &[Post]) -> String {
+    let mut sitemap = String::from(
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
+         <urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n",
+    );
+    let latest = posts.first().map(|post| &post.date);
+    push_sitemap_url(&mut sitemap, &format!("{ORIGIN}/"), latest);
+    push_sitemap_url(&mut sitemap, &format!("{ORIGIN}/posts"), latest);
+    for post in posts {
+        push_sitemap_url(
+            &mut sitemap,
+            &format!("{ORIGIN}/posts/{}", post.slug),
+            Some(&post.date),
+        );
+    }
+    sitemap.push_str("</urlset>\n");
+    sitemap
+}
+
+fn push_sitemap_url(sitemap: &mut String, location: &str, last_modified: Option<&DateTime<Utc>>) {
+    sitemap.push_str("<url>\n");
+    sitemap.push_str(&format!("<loc>{}</loc>\n", escape_xml(location)));
+    if let Some(last_modified) = last_modified {
+        sitemap.push_str(&format!(
+            "<lastmod>{}</lastmod>\n",
+            last_modified.format("%Y-%m-%d")
+        ));
+    }
+    sitemap.push_str("</url>\n");
+}
+
 fn escape_xml(source: &str) -> String {
     source
         .replace('&', "&amp;")
@@ -193,6 +230,7 @@ fn load_post(path: &str) -> Result<Post, SiteError> {
         slug,
         meta,
         date,
+        source,
         body_html,
         date_label,
     })
@@ -341,6 +379,7 @@ mod tests {
     fn builds_rss() {
         let home = HomePage {
             description: "Test & feed".to_owned(),
+            source: "# Test feed",
             body_html: String::new(),
         };
         let posts = [Post {
@@ -351,6 +390,7 @@ mod tests {
                 tags: vec!["rust".to_owned(), "storage & systems".to_owned()],
             },
             date: Utc.with_ymd_and_hms(2026, 1, 2, 0, 0, 0).unwrap(),
+            source: "# Test Post",
             body_html: String::new(),
             date_label: "January 2, 2026".to_owned(),
         }];
@@ -363,5 +403,27 @@ mod tests {
         assert!(feed.contains("<description>A &quot;description&quot;</description>"));
         assert!(feed.contains("<category>rust</category>"));
         assert!(feed.contains("<category>storage &amp; systems</category>"));
+    }
+
+    #[test]
+    fn builds_sitemap() {
+        let posts = [Post {
+            slug: "test-post".to_owned(),
+            meta: PostMeta {
+                title: "Test Post".to_owned(),
+                description: None,
+                tags: Vec::new(),
+            },
+            date: Utc.with_ymd_and_hms(2026, 1, 2, 0, 0, 0).unwrap(),
+            source: "# Test Post",
+            body_html: String::new(),
+            date_label: "January 2, 2026".to_owned(),
+        }];
+        let sitemap = build_sitemap(&posts);
+
+        assert!(sitemap.contains("<loc>https://n8m.us/</loc>"));
+        assert!(sitemap.contains("<loc>https://n8m.us/posts</loc>"));
+        assert!(sitemap.contains("<loc>https://n8m.us/posts/test-post</loc>"));
+        assert!(sitemap.contains("<lastmod>2026-01-02</lastmod>"));
     }
 }
