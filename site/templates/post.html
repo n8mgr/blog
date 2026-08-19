@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}~/n8m.us/posts/{{ post.meta.title }}{% endblock %}
+{% block description %}{% if let Some(description) = post.meta.description %}{{ description }}{% else %}{{ post.meta.title }}{% endif %}{% endblock %}
+{% block content %}
+<article class="post">
+    <header class="post-header">
+        <a class="back-link" href="/posts">← All posts</a>
+        <h1>{{ post.meta.title }}</h1>
+        <time datetime="{{ post.date.to_rfc3339() }}">{{ post.date_label }}</time>
+        {% if !post.meta.tags.is_empty() %}
+        <ul class="tags" aria-label="Tags">
+            {% for tag in post.meta.tags %}<li>{{ tag }}</li>{% endfor %}
+        </ul>
+        {% endif %}
+    </header>
+    <div class="post-content prose">
+        {{ post.body_html|safe }}
+    </div>
+</article>
+{% endblock %}

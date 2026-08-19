@@ -1,0 +1,20 @@
+[package]
+name = "blog"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+askama = "0.16.0"
+axum = { version = "0.8.9", features = ["http2"] }
+chrono = "0.4.45"
+mime_guess = "2.0.5"
+pulldown-cmark = "0.13.4"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.151"
+syntect = "5.3.0"
+tokio = { version = "1.53.1", features = ["macros", "net", "rt-multi-thread", "signal"] }
+
+[dev-dependencies]
+http-body-util = "0.1.5"
+tower = { version = "0.5.3", features = ["util"] }

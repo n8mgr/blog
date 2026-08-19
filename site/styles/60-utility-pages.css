@@ -1,0 +1,15 @@
+.not-found {
+  max-width: 48rem;
+  padding: 8rem 0;
+}
+
+.not-found h1 {
+  font-size: clamp(2.5rem, 7vw, 4.5rem);
+}
+
+.site-footer {
+  padding: 2rem 0;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: .72rem;
+}

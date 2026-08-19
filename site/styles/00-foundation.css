@@ -1,0 +1,63 @@
+@font-face {
+  font-family: "Fira Code";
+  src: url("__FIRA_CODE_URL__") format("woff2");
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: dark;
+  --background: #0b0f14;
+  --surface: #10161d;
+  --surface-raised: #151c24;
+  --text: #d7dee7;
+  --text-strong: #f0f4f8;
+  --muted: #7d8996;
+  --line: #27313c;
+  --accent: #7ee787;
+  --accent-muted: #3d8b54;
+  --chart-1: #58a66a;
+  --chart-2: #4f83b8;
+  --chart-3: #8669ad;
+  --chart-4: #7d8996;
+  --code: #080b0f;
+  --shell: 68rem;
+  font-family: "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-synthesis: style;
+  font-variant-ligatures: contextual;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--background);
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--background);
+}
+
+a {
+  color: var(--accent);
+  text-decoration-color: var(--accent-muted);
+  text-decoration-thickness: 1px;
+  text-underline-offset: .22em;
+}
+
+a:hover {
+  color: var(--text-strong);
+  text-decoration-color: var(--accent);
+}

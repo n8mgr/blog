@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0b0f14">
+    <meta name="description" content="{% block description %}A personal blog{% endblock %}">
+    <title>{% block title %}~/n8m.us{% endblock %}</title>
+    <link rel="alternate" type="application/rss+xml" title="~/n8m.us RSS" href="/feed.xml">
+    <link rel="stylesheet" href="{{ stylesheet_url }}">
+</head>
+<body>
+    <header class="site-header">
+        <nav class="shell" aria-label="Primary navigation">
+            <a class="wordmark" href="/">n8m.us</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/posts">Posts</a>
+            </div>
+        </nav>
+    </header>
+    <main class="shell">
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="site-footer shell">
+        <a href="https://github.com/n8mgr">github.com/n8mgr</a>
+        <span aria-hidden="true">·</span>
+        <a href="/feed.xml">RSS</a>
+    </footer>
+</body>
+</html>

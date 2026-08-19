@@ -1,0 +1,19 @@
+@media (max-width: 48rem) {
+  .shell {
+    width: min(calc(100% - 1.5rem), var(--shell));
+  }
+
+  .post-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .post-row-link {
+    grid-template-columns: 1fr;
+    gap: .5rem;
+  }
+
+  .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

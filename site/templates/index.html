@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}~/n8m.us{% endblock %}
+{% block description %}{{ page.description }}{% endblock %}
+{% block content %}
+<section class="hero prose">
+    {{ page.body_html|safe }}
+</section>
+
+{% if !recent_posts.is_empty() %}
+<section class="section">
+    <div class="section-heading">
+        <h2>Posts</h2>
+        <a href="/posts">All posts →</a>
+    </div>
+    <div class="post-grid">
+        {% for post in recent_posts %}
+        <article class="post-card">
+            <a class="post-card-link" href="/posts/{{ post.slug }}">
+                <time datetime="{{ post.date.to_rfc3339() }}">{{ post.date_label }}</time>
+                <h3>{{ post.meta.title }}</h3>
+                {% if let Some(description) = post.meta.description %}
+                <p>{{ description }}</p>
+                {% endif %}
+            </a>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+{% endblock %}
