@@ -21,29 +21,7 @@ type = "CreateChangeFile"
 name = "prepare-release"
 
 [[workflows.steps]]
-type = "Command"
-command = "git switch -c release"
-
-[[workflows.steps]]
 type = "PrepareRelease"
-
-[[workflows.steps]]
-type = "Command"
-command = "git commit -m \"chore: prepare release $version\""
-
-[[workflows.steps]]
-type = "Command"
-command = "git push --force --set-upstream origin release"
-
-[[workflows.steps]]
-type = "CreatePullRequest"
-base = "master"
-
-[workflows.steps.title]
-template = "chore: prepare release $version"
-
-[workflows.steps.body]
-template = "Release $version"
 
 [[workflows]]
 name = "release"

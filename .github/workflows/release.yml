@@ -11,6 +11,8 @@ permissions:
 jobs:
   release:
     if: github.head_ref == 'release' && github.event.pull_request.merged == true
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -21,5 +23,15 @@ jobs:
           version: 0.23.0
       - name: Release
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: knope release --verbose
+
+  publish:
+    if: github.head_ref == 'release' && github.event.pull_request.merged == true
+    needs: release
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/container.yml
+    with:
+      tag: latest
