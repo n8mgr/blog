@@ -1,0 +1,28 @@
+version: 2
+
+multi-ecosystem-groups:
+  weekly-deps:
+    schedule:
+      interval: "weekly"
+
+updates:
+  - package-ecosystem: "cargo"
+    directory: "/"
+    patterns: ["*"]
+    multi-ecosystem-group: "weekly-deps"
+    cooldown:
+      default-days: 7
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    patterns: ["*"]
+    multi-ecosystem-group: "weekly-deps"
+    cooldown:
+      default-days: 7
+
+  - package-ecosystem: "docker"
+    directory: "/"
+    patterns: ["*"]
+    multi-ecosystem-group: "weekly-deps"
+    cooldown:
+      default-days: 7
