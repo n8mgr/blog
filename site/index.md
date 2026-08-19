@@ -6,4 +6,4 @@
 
 # Software and systems.
 
-Rust, infrastructure, and benchmarks.
+My personal thoughts on code, infrastructure, self-hosting, etc.

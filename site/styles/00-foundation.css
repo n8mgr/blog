@@ -61,3 +61,10 @@ a:hover {
   color: var(--text-strong);
   text-decoration-color: var(--accent);
 }
+
+time {
+  color: var(--muted);
+  font-size: .72rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}

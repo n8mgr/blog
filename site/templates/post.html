@@ -4,7 +4,7 @@
 {% block content %}
 <article class="post">
     <header class="post-header">
-        <a class="back-link" href="/posts">← All posts</a>
+        <a class="back-link" href="/#posts">← All posts</a>
         <h1>{{ post.meta.title }}</h1>
         <time datetime="{{ post.date.to_rfc3339() }}">{{ post.date_label }}</time>
         {% if !post.meta.tags.is_empty() %}
