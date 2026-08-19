@@ -15,13 +15,6 @@ const ROBOTS_TXT: &str = include_str!("../site/robots.txt");
 #[template(path = "index.html")]
 struct IndexTemplate<'a> {
     page: &'a HomePage,
-    recent_posts: &'a [Post],
-    stylesheet_url: &'static str,
-}
-
-#[derive(Template)]
-#[template(path = "posts.html")]
-struct PostsTemplate<'a> {
     posts: &'a [Post],
     stylesheet_url: &'static str,
     search_script_url: &'static str,
@@ -43,7 +36,6 @@ struct NotFoundTemplate {
 pub fn create_router(site: Site) -> Router {
     Router::new()
         .route("/", get(index))
-        .route("/posts", get(posts))
         .route("/posts/{slug}", get(post))
         .route("/feed.xml", get(rss_feed))
         .route("/sitemap.xml", get(sitemap))
@@ -60,17 +52,10 @@ async fn index(headers: HeaderMap, State(site): State<Arc<Site>>) -> Response {
     }
     vary_on_accept(render_template(IndexTemplate {
         page: &site.home,
-        recent_posts: &site.posts[..site.posts.len().min(3)],
-        stylesheet_url: asset_url("css/main.css"),
-    }))
-}
-
-async fn posts(State(site): State<Arc<Site>>) -> Response {
-    render_template(PostsTemplate {
         posts: &site.posts,
         stylesheet_url: asset_url("css/main.css"),
         search_script_url: asset_url("js/search.js"),
-    })
+    }))
 }
 
 async fn post(
@@ -323,30 +308,19 @@ mod tests {
 
     #[tokio::test]
     async fn post_previews_are_full_area_links() {
-        let app = create_router(test_site());
-        for (path, link_class) in [("/", "post-card-link"), ("/posts", "post-row-link")] {
-            let response = app
-                .clone()
-                .oneshot(Request::builder().uri(path).body(Body::empty()).unwrap())
-                .await
-                .unwrap();
-            let body = response.into_body().collect().await.unwrap().to_bytes();
-            let markup = String::from_utf8(body.to_vec()).unwrap();
-            assert!(
-                markup.contains(&format!("class=\"{link_class}\" href=\"{POST_PATH}\"")),
-                "{path} should render its post preview as a full-area link"
-            );
-        }
+        let response = create_router(test_site())
+            .oneshot(Request::builder().uri("/").body(Body::empty()).unwrap())
+            .await
+            .unwrap();
+        let body = response.into_body().collect().await.unwrap().to_bytes();
+        let markup = String::from_utf8(body.to_vec()).unwrap();
+        assert!(markup.contains(&format!("class=\"post-row-link\" href=\"{POST_PATH}\"")));
     }
 
     #[tokio::test]
     async fn document_titles_read_like_paths() {
         let app = create_router(test_site());
-        for (path, title) in [
-            ("/", "~/n8m.us"),
-            ("/posts", "~/n8m.us/posts"),
-            (POST_PATH, "~/n8m.us/posts/Test Post"),
-        ] {
+        for (path, title) in [("/", "~/n8m.us"), (POST_PATH, "~/n8m.us/posts/Test Post")] {
             let response = app
                 .clone()
                 .oneshot(Request::builder().uri(path).body(Body::empty()).unwrap())

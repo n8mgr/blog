@@ -178,7 +178,6 @@ fn build_sitemap(posts: &[Post]) -> String {
     );
     let latest = posts.first().map(|post| &post.date);
     push_sitemap_url(&mut sitemap, &format!("{ORIGIN}/"), latest);
-    push_sitemap_url(&mut sitemap, &format!("{ORIGIN}/posts"), latest);
     for post in posts {
         push_sitemap_url(
             &mut sitemap,
@@ -422,7 +421,6 @@ mod tests {
         let sitemap = build_sitemap(&posts);
 
         assert!(sitemap.contains("<loc>https://n8m.us/</loc>"));
-        assert!(sitemap.contains("<loc>https://n8m.us/posts</loc>"));
         assert!(sitemap.contains("<loc>https://n8m.us/posts/test-post</loc>"));
         assert!(sitemap.contains("<lastmod>2026-01-02</lastmod>"));
     }

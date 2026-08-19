@@ -6,25 +6,32 @@
     {{ page.body_html|safe }}
 </section>
 
-{% if !recent_posts.is_empty() %}
-<section class="section">
-    <div class="section-heading">
-        <h2>Posts</h2>
-        <a href="/posts">All posts →</a>
-    </div>
-    <div class="post-grid">
-        {% for post in recent_posts %}
-        <article class="post-card">
-            <a class="post-card-link" href="/posts/{{ post.slug }}">
+{% if !posts.is_empty() %}
+<section id="posts" class="section">
+    <h2>Posts</h2>
+    <label class="search-box" for="search">
+        <span>Search posts</span>
+        <input type="search" id="search" placeholder="Try “Rust”" autocomplete="off">
+    </label>
+    <p id="search-status" class="search-status" aria-live="polite"></p>
+
+    <div id="posts-list" class="post-list">
+        {% for post in posts %}
+        <article class="post-row" data-slug="{{ post.slug }}">
+            <a class="post-row-link" href="/posts/{{ post.slug }}">
                 <time datetime="{{ post.date.to_rfc3339() }}">{{ post.date_label }}</time>
-                <h3>{{ post.meta.title }}</h3>
-                {% if let Some(description) = post.meta.description %}
-                <p>{{ description }}</p>
-                {% endif %}
+                <div>
+                    <h3>{{ post.meta.title }}</h3>
+                    {% if let Some(description) = post.meta.description %}
+                    <p>{{ description }}</p>
+                    {% endif %}
+                </div>
             </a>
         </article>
         {% endfor %}
     </div>
+    <noscript><p>Search needs JavaScript; every post is still listed above.</p></noscript>
 </section>
+<script src="{{ search_script_url }}" defer></script>
 {% endif %}
 {% endblock %}
