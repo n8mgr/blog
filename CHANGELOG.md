@@ -1,4 +1,10 @@
 # Changelog
+## 0.1.2 (2026-08-19)
+
+### Features
+
+- Add robots.txt, sitemap, and raw markdown support.
+
 ## 0.1.1 (2026-08-19)
 
 ### New Posts
