@@ -1,4 +1,10 @@
 # Changelog
+## 0.1.3 (2026-08-19)
+
+### Features
+
+- Flatten posts page
+
 ## 0.1.2 (2026-08-19)
 
 ### Features
